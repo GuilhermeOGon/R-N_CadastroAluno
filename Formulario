@@ -48,6 +48,12 @@ export default function App() {
     setMensagem('');
   }
 
+  // ✅ FUNÇÃO PARA REMOVER
+  function removerAluno(index) {
+    const novaLista = alunos.filter((_, i) => i !== index);
+    setAlunos(novaLista);
+  }
+
   if (tela === 'mudar') {
     return (
       <View style={styles.container}>
@@ -87,7 +93,6 @@ export default function App() {
           {mensagem}
         </Text>
 
-        {/* SCROLL AQUI */}
         <ScrollView style={styles.lista}>
           {alunos.map((aluno, index) => (
             <View key={index} style={styles.info}>
@@ -97,6 +102,12 @@ export default function App() {
                 <Text>Nome: {aluno.nome}</Text>
                 <Text>Idade: {aluno.idade}</Text>
                 <Text>Curso: {aluno.curso}</Text>
+
+                {/* ✅ BOTÃO EXCLUIR */}
+                <Button 
+                  title="Excluir" 
+                  onPress={() => removerAluno(index)} 
+                />
               </View>
 
               <View style={styles.coluna}>
