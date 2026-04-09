@@ -11,6 +11,7 @@ export default function App() {
   const [nome, setNome] = useState('');
   const [idade, setIdade] = useState('');
   const [curso, setCurso] = useState('');
+  const [editandoIndex, setEditandoIndex] = useState(null);
 
   function validarLogin() {
     setMensagem('');
@@ -34,13 +35,15 @@ export default function App() {
       return;
     }
 
-    const novoAluno = {
-      nome,
-      idade,
-      curso
-    };
-
-    setAlunos([...alunos, novoAluno]);
+    if (editandoIndex !== null) {
+      const listaAtualizada = [...alunos];
+      listaAtualizada[editandoIndex] = { nome, idade, curso };
+      setAlunos(listaAtualizada);
+      setEditandoIndex(null);
+    } else {
+      const novoAluno = { nome, idade, curso };
+      setAlunos([...alunos, novoAluno]);
+    }
 
     setNome('');
     setIdade('');
@@ -48,16 +51,25 @@ export default function App() {
     setMensagem('');
   }
 
-  // ✅ FUNÇÃO PARA REMOVER
   function removerAluno(index) {
     const novaLista = alunos.filter((_, i) => i !== index);
     setAlunos(novaLista);
   }
 
+  function editarAluno(index) {
+    const aluno = alunos[index];
+    setNome(aluno.nome);
+    setIdade(aluno.idade);
+    setCurso(aluno.curso);
+    setEditandoIndex(index);
+  }
+
   if (tela === 'mudar') {
     return (
       <View style={styles.container}>
-        <Text style={styles.texto}>Cadastre o Aluno!</Text>
+        <Text style={styles.texto}>
+          {editandoIndex !== null ? "Editando Aluno" : "Cadastre o Aluno!"}
+        </Text>
 
         <Text>Nome:</Text>
         <TextInput
@@ -87,7 +99,10 @@ export default function App() {
           onChangeText={setCurso}
         />
 
-        <Button title="Cadastrar Aluno" onPress={cadastrarAluno} />
+        <Button 
+          title={editandoIndex !== null ? "Atualizar Aluno" : "Cadastrar Aluno"} 
+          onPress={cadastrarAluno} 
+        />
 
         <Text style={{ color: 'red', margin: 10 }}>
           {mensagem}
@@ -103,7 +118,11 @@ export default function App() {
                 <Text>Idade: {aluno.idade}</Text>
                 <Text>Curso: {aluno.curso}</Text>
 
-                {/* ✅ BOTÃO EXCLUIR */}
+                <Button 
+                  title="Editar" 
+                  onPress={() => editarAluno(index)} 
+                />
+
                 <Button 
                   title="Excluir" 
                   onPress={() => removerAluno(index)} 
